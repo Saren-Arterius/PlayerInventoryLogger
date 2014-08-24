@@ -7,6 +7,7 @@ website: ${url}
  
 main: ${groupId}.${artifactId}.${mainClass}
 mainCommand: ${mainCommand}
+softdepend: [Vault]
 
 commands:
     ${mainCommand}:
@@ -25,5 +26,5 @@ permissions:
             ${artifactId}.reload: true
         default: op
     ${artifactId}.use:
-        description: Gives access to basic command and using scrolls.
+        description: Gives access to basic command.
         default: op

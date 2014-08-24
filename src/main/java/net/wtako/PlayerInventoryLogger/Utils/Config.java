@@ -1,6 +1,5 @@
 package net.wtako.PlayerInventoryLogger.Utils;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.wtako.PlayerInventoryLogger.Main;
@@ -9,11 +8,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public enum Config {
 
-    DEBUG("system.debug", true),
-    SHIT("lol.shit", false),
-    SHIT_TIMES("lol.shit-times", 42),
-    HAPPY_TIMES("lol.happy-times", 2),
-    LIST_OF_NAMES("lol.list-of-names", Arrays.asList("Peter", "Mary", "John"));
+    LOG_ECON("logger.loc-econ", true),
+    AUTO_PURGE_BEFORE_DAYS("auto-purge.before-days", 7),
+    AUTO_PURGE_INTERVAL_MINUTES("auto-purge.interval-minutes", 30),
+    AUTO_LOG_INTERVAL_SECONDS("logger.auto-log.interval-seconds", 60);
 
     private String path;
     private Object value;

@@ -3,19 +3,27 @@ package net.wtako.PlayerInventoryLogger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
 import net.wtako.PlayerInventoryLogger.Commands.CommandPIL;
+import net.wtako.PlayerInventoryLogger.EventHandlers.PlayerEventListener;
+import net.wtako.PlayerInventoryLogger.Methods.Database;
+import net.wtako.PlayerInventoryLogger.Schedulers.AutoLogger;
+import net.wtako.PlayerInventoryLogger.Schedulers.LogPurger;
 import net.wtako.PlayerInventoryLogger.Utils.Config;
 import net.wtako.PlayerInventoryLogger.Utils.Lang;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
 
     private static Main             instance;
+    public static Economy           econ;
     public static String            artifactId;
     public static YamlConfiguration LANG;
     public static File              LANG_FILE;
@@ -28,6 +36,23 @@ public final class Main extends JavaPlugin {
         getCommand(getProperty("mainCommand")).setExecutor(new CommandPIL());
         Config.saveAll();
         loadLang();
+        if (Config.LOG_ECON.getBoolean()) {
+            setupEcon();
+        }
+        if (Database.getInstance() == null) {
+            try {
+                new Database();
+            } catch (final SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (AutoLogger.getInstance() == null) {
+            new AutoLogger();
+        }
+        if (LogPurger.getInstance() == null) {
+            new LogPurger();
+        }
+        getServer().getPluginManager().registerEvents(new PlayerEventListener(), this);
     }
 
     public void loadLang() {
@@ -67,6 +92,14 @@ public final class Main extends JavaPlugin {
             Main.log.log(Level.WARNING, "[" + Main.getInstance().getName() + "] Report this stack trace to "
                     + getProperty("author") + ".");
             e.printStackTrace();
+        }
+    }
+
+    public void setupEcon() {
+        final RegisteredServiceProvider<Economy> economyProvider = Main.getInstance().getServer().getServicesManager()
+                .getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            Main.econ = economyProvider.getProvider();
         }
     }
 

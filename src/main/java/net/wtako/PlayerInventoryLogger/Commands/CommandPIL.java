@@ -27,7 +27,7 @@ public class CommandPIL implements CommandExecutor {
                 return true;
             }
             targetCommand.getTargetClass().getDeclaredConstructor(CommandSender.class, String[].class)
-            .newInstance(sender, args);
+                    .newInstance(sender, args);
             return true;
         } catch (final IllegalArgumentException e) {
             return false;

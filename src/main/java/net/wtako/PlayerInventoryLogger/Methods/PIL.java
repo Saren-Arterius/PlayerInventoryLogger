@@ -16,9 +16,9 @@ import net.wtako.PlayerInventoryLogger.Main;
 import net.wtako.PlayerInventoryLogger.Utils.ExperienceManager;
 import net.wtako.PlayerInventoryLogger.Utils.ItemUtils;
 import net.wtako.PlayerInventoryLogger.Utils.Lang;
+import net.wtako.PlayerInventoryLogger.Utils.UUIDUtils;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -109,16 +109,11 @@ public class PIL {
                             formatter.format(new Date(currentTime - (minutesBefore * 60000L) - (minutesSpan * 60000L))),
                             formatter.format(new Date(currentTime - (minutesBefore * 60000L)))));
                     while (result.next()) {
-                        String worldName = Lang.WORLD_NOT_FOUND.toString();
-                        final World world = Main.getInstance().getServer()
-                                .getWorld(UUID.fromString(result.getString("world_uuid")));
-                        if (world != null) {
-                            worldName = world.getName();
-                        }
                         sender.sendMessage(MessageFormat.format(Lang.SHOW_LOG_FORMAT.toString(),
                                 result.getInt("row_id"), formatter.format(new Date(result.getLong("timestamp"))),
-                                worldName, result.getInt("x"), result.getInt("y"), result.getInt("z"),
-                                result.getString("reason"), result.getDouble("balance"), result.getDouble("exp")));
+                                UUIDUtils.getWorldName(UUID.fromString(result.getString("world_uuid"))),
+                                result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getString("reason"),
+                                result.getDouble("balance"), result.getDouble("exp")));
                     }
                     result.close();
                     selStmt.close();
@@ -146,16 +141,13 @@ public class PIL {
                     }
                     final String json = result.getString("inventory");
                     final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-                    String worldName = Lang.WORLD_NOT_FOUND.toString();
-                    final World world = Main.getInstance().getServer()
-                            .getWorld(UUID.fromString(result.getString("world_uuid")));
-                    if (world != null) {
-                        worldName = world.getName();
-                    }
+
                     final String msg = MessageFormat.format(Lang.CHECK_OWNS_ROW_FORMAT.toString(),
-                            formatter.format(new Date(result.getLong("timestamp"))), worldName, result.getInt("x"),
-                            result.getInt("y"), result.getInt("z"), result.getString("reason"),
-                            result.getDouble("balance"), result.getDouble("exp"));
+                            formatter.format(new Date(result.getLong("timestamp"))),
+                            UUIDUtils.getWorldName(UUID.fromString(result.getString("world_uuid"))),
+                            result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getString("reason"),
+                            result.getDouble("balance"), result.getDouble("exp"),
+                            UUIDUtils.getPlayerName(UUID.fromString(result.getString("player_uuid"))));
                     result.close();
                     insStmt.close();
                     PIL.logPlayer(target, LogReason.INV_RESTORE, false);
@@ -238,35 +230,27 @@ public class PIL {
                                 "SELECT * FROM inventory_logs WHERE row_id = ?");
                         selStmt.setInt(1, sinceRowIDs.get(i));
                         result = selStmt.executeQuery();
-                        String worldName = Lang.WORLD_NOT_FOUND.toString();
-                        World world = Main.getInstance().getServer()
-                                .getWorld(UUID.fromString(result.getString("world_uuid")));
-                        if (world != null) {
-                            worldName = world.getName();
-                        }
                         sender.sendMessage(MessageFormat.format(Lang.CHECK_OWNS_SINCE.toString(), target.getName(),
                                 sinceRowIDs.get(i)));
                         sender.sendMessage(MessageFormat.format(Lang.CHECK_OWNS_ROW_FORMAT.toString(),
-                                formatter.format(new Date(result.getLong("timestamp"))), worldName, result.getInt("x"),
-                                result.getInt("y"), result.getInt("z"), result.getString("reason"),
-                                result.getDouble("balance"), result.getDouble("exp")));
+                                formatter.format(new Date(result.getLong("timestamp"))),
+                                UUIDUtils.getWorldName(UUID.fromString(result.getString("world_uuid"))),
+                                result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getString("reason"),
+                                result.getDouble("balance"), result.getDouble("exp"),
+                                UUIDUtils.getPlayerName(UUID.fromString(result.getString("player_uuid")))));
                         result.close();
                         selStmt.close();
                         selStmt = Database.getConn().prepareStatement("SELECT * FROM inventory_logs WHERE row_id = ?");
                         selStmt.setInt(1, untilRowIDs.get(i));
                         result = selStmt.executeQuery();
-                        worldName = Lang.WORLD_NOT_FOUND.toString();
-                        world = Main.getInstance().getServer()
-                                .getWorld(UUID.fromString(result.getString("world_uuid")));
-                        if (world != null) {
-                            worldName = world.getName();
-                        }
                         sender.sendMessage(MessageFormat.format(Lang.CHECK_OWNS_UNTIL.toString(), target.getName(),
                                 untilRowIDs.get(i)));
                         sender.sendMessage(MessageFormat.format(Lang.CHECK_OWNS_ROW_FORMAT.toString(),
-                                formatter.format(new Date(result.getLong("timestamp"))), worldName, result.getInt("x"),
-                                result.getInt("y"), result.getInt("z"), result.getString("reason"),
-                                result.getDouble("balance"), result.getDouble("exp")));
+                                formatter.format(new Date(result.getLong("timestamp"))),
+                                UUIDUtils.getWorldName(UUID.fromString(result.getString("world_uuid"))),
+                                result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getString("reason"),
+                                result.getDouble("balance"), result.getDouble("exp"),
+                                UUIDUtils.getPlayerName(UUID.fromString(result.getString("player_uuid")))));
                         result.close();
                         selStmt.close();
                     }

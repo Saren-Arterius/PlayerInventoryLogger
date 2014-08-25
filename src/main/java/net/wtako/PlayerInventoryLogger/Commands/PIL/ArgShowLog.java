@@ -21,7 +21,7 @@ public class ArgShowLog {
         }
 
         final OfflinePlayer target = Main.getInstance().getServer().getOfflinePlayer(args[1]);
-        if (target == null) {
+        if (target == null || target.getUniqueId() == null) {
             sender.sendMessage(MessageFormat.format(Lang.PLAYER_NOT_FOUND.toString(), args[1]));
             return;
         }

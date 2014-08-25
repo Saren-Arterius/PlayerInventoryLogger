@@ -7,7 +7,7 @@ website: ${url}
  
 main: ${groupId}.${artifactId}.${mainClass}
 mainCommand: ${mainCommand}
-softdepend: [Vault]
+softdepend: [Vault, Essentials]
 
 commands:
     ${mainCommand}:

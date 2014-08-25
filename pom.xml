@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.wtako</groupId>
 	<artifactId>PlayerInventoryLogger</artifactId>
-	<version>0.0.1a-SNAPSHOT</version>
+	<version>0.0.1b-SNAPSHOT</version>
 	<name>PlayerInventoryLogger</name>
 
 	<properties>

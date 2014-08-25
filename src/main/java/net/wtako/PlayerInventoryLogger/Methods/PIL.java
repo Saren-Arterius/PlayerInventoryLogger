@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.wtako.PlayerInventoryLogger.Main;
+import net.wtako.PlayerInventoryLogger.Utils.CompressUtils;
 import net.wtako.PlayerInventoryLogger.Utils.ExperienceManager;
 import net.wtako.PlayerInventoryLogger.Utils.ItemUtils;
 import net.wtako.PlayerInventoryLogger.Utils.Lang;
@@ -55,7 +56,8 @@ public class PIL {
                     insStmt.setInt(4, player.getLocation().getBlockY());
                     insStmt.setInt(5, player.getLocation().getBlockZ());
                     insStmt.setString(6, reason.name());
-                    insStmt.setString(7, ItemUtils.encodeInventory(invContents, armorContents).toJSONString());
+                    insStmt.setBytes(7, CompressUtils.compress(ItemUtils.encodeInventory(invContents, armorContents)
+                            .toJSONString()));
                     insStmt.setLong(8, System.currentTimeMillis());
                     double balance = 0;
                     if (Main.econ != null) {
@@ -139,7 +141,7 @@ public class PIL {
                         insStmt.close();
                         return;
                     }
-                    final String json = result.getString("inventory");
+                    final String json = CompressUtils.decompress(result.getBytes("inventory"));
                     final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 
                     final String msg = MessageFormat.format(Lang.CHECK_OWNS_ROW_FORMAT.toString(),
@@ -186,8 +188,8 @@ public class PIL {
                     ResultSet result = insStmt.executeQuery();
                     while (result.next()) {
                         boolean invHasSimilarItem = false;
-                        final Map<String, Object> itemJson = (Map<String, Object>) JSONValue.parse(result
-                                .getString("inventory"));
+                        final Map<String, Object> itemJson = (Map<String, Object>) JSONValue.parse(CompressUtils
+                                .decompress(result.getBytes("inventory")));
                         final ArrayList<ItemStack> items = new ArrayList<ItemStack>(Arrays.asList(ItemUtils
                                 .restoreItems((ArrayList<JSONObject>) itemJson.get("content"))));
                         items.add(ItemUtils.restoreItem((Map<String, Object>) itemJson.get("helmet")));

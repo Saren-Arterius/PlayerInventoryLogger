@@ -35,10 +35,12 @@ public class PIL {
         DEATH,
         MANUAL,
         CHANGE_WORLD,
+        INV_RESTORE,
     }
 
-    public static void logPlayer(final Player player, final ItemStack[] invContents, final ItemStack[] armorContents,
-            final LogReason reason, boolean forceAsync) {
+    public static void logPlayer(final Player player, final LogReason reason, boolean forceAsync) {
+        final ItemStack[] invContents = player.getInventory().getContents();
+        final ItemStack[] armorContents = player.getInventory().getArmorContents();
         final BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -54,43 +56,6 @@ public class PIL {
                     insStmt.setInt(5, player.getLocation().getBlockZ());
                     insStmt.setString(6, reason.name());
                     insStmt.setString(7, ItemUtils.encodeInventory(invContents, armorContents).toJSONString());
-                    insStmt.setLong(8, System.currentTimeMillis());
-                    double balance = 0;
-                    if (Main.econ != null) {
-                        balance = Main.econ.getBalance(player);
-                    }
-                    insStmt.setDouble(9, balance);
-                    insStmt.setDouble(10, new ExperienceManager(player).getCurrentExp());
-                    insStmt.execute();
-                    insStmt.close();
-                } catch (final SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        if (forceAsync) {
-            runnable.runTaskAsynchronously(Main.getInstance());
-        } else {
-            runnable.run();
-        }
-    }
-
-    public static void logPlayer(final Player player, final LogReason reason, boolean forceAsync) {
-        final BukkitRunnable runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    final PreparedStatement insStmt = Database.getConn().prepareStatement(
-                            "INSERT INTO inventory_logs (`player_uuid`, `world_uuid`, "
-                                    + "`x`, `y`, `z`, `reason`, `inventory`, `timestamp`, "
-                                    + "`balance`, `exp`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    insStmt.setString(1, player.getUniqueId().toString());
-                    insStmt.setString(2, player.getWorld().getUID().toString());
-                    insStmt.setInt(3, player.getLocation().getBlockX());
-                    insStmt.setInt(4, player.getLocation().getBlockY());
-                    insStmt.setInt(5, player.getLocation().getBlockZ());
-                    insStmt.setString(6, reason.name());
-                    insStmt.setString(7, ItemUtils.encodeInventory(player.getInventory()).toJSONString());
                     insStmt.setLong(8, System.currentTimeMillis());
                     double balance = 0;
                     if (Main.econ != null) {
@@ -193,6 +158,7 @@ public class PIL {
                             result.getDouble("balance"), result.getDouble("exp"));
                     result.close();
                     insStmt.close();
+                    PIL.logPlayer(target, LogReason.INV_RESTORE, false);
                     new BukkitRunnable() {
                         @Override
                         public void run() {

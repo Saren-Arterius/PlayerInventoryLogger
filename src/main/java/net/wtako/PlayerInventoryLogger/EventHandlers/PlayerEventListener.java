@@ -9,7 +9,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class PlayerEventListener implements Listener {
 
@@ -30,9 +29,7 @@ public class PlayerEventListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(final PlayerDeathEvent event) {
-        final ItemStack[] invContents = event.getEntity().getInventory().getContents();
-        final ItemStack[] armorContents = event.getEntity().getInventory().getArmorContents();
-        PIL.logPlayer(event.getEntity(), invContents, armorContents, LogReason.DEATH, true);
+        PIL.logPlayer(event.getEntity(), LogReason.DEATH, true);
     }
 
 }

@@ -126,6 +126,48 @@ public class PIL {
         }.runTaskAsynchronously(Main.getInstance());
     }
 
+    public static void showRows(final CommandSender sender, final OfflinePlayer target, final LogReason reason,
+            final int inclusiveFrom, final int inclusiveTo) {
+        new BukkitRunnable() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void run() {
+                try {
+                    PreparedStatement selStmt;
+                    if (reason != null) {
+                        selStmt = Database.getConn().prepareStatement(
+                                "SELECT * FROM inventory_logs WHERE player_uuid = ? "
+                                        + "AND (row_id BETWEEN ? AND ?) AND reason = ?");
+                    } else {
+                        selStmt = Database.getConn().prepareStatement(
+                                "SELECT * FROM inventory_logs WHERE player_uuid = ? " + "AND (row_id BETWEEN ? AND ?)");
+                    }
+                    selStmt.setString(1, target.getUniqueId().toString());
+                    selStmt.setLong(2, inclusiveFrom);
+                    selStmt.setLong(3, inclusiveTo);
+                    if (reason != null) {
+                        selStmt.setString(4, reason.name());
+                    }
+                    final ResultSet result = selStmt.executeQuery();
+                    final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+                    sender.sendMessage(MessageFormat.format(Lang.SHOW_LOG_TITLE.toString(), target.getName(),
+                            inclusiveFrom, inclusiveTo));
+                    while (result.next()) {
+                        sender.sendMessage(MessageFormat.format(Lang.SHOW_LOG_FORMAT.toString(),
+                                result.getInt("row_id"), formatter.format(new Date(result.getLong("timestamp"))),
+                                UUIDUtils.getWorldName(UUID.fromString(result.getString("world_uuid"))),
+                                result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getString("reason"),
+                                result.getDouble("balance"), result.getDouble("exp")));
+                    }
+                    result.close();
+                    selStmt.close();
+                } catch (final SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(Main.getInstance());
+    }
+
     public static void restoreInventory(final CommandSender sender, final Player target, final int rowID) {
         new BukkitRunnable() {
             @Override

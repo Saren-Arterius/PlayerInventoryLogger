@@ -7,6 +7,7 @@ import net.wtako.PlayerInventoryLogger.Commands.PIL.ArgLogAllNow;
 import net.wtako.PlayerInventoryLogger.Commands.PIL.ArgReload;
 import net.wtako.PlayerInventoryLogger.Commands.PIL.ArgRestore;
 import net.wtako.PlayerInventoryLogger.Commands.PIL.ArgShowLog;
+import net.wtako.PlayerInventoryLogger.Commands.PIL.ArgShowRows;
 
 public enum CommandsPIL implements BaseCommands {
 
@@ -15,6 +16,8 @@ public enum CommandsPIL implements BaseCommands {
     LOG_ALL_NOW(Lang.HELP_LOG_ALL_NOW.toString(), ArgLogAllNow.class, Main.artifactId + ".admin"),
     SL(Lang.HELP_SHOW_LOG.toString(), ArgShowLog.class, Main.artifactId + ".admin"),
     SHOW_LOG(Lang.HELP_SHOW_LOG.toString(), ArgShowLog.class, Main.artifactId + ".admin"),
+    SR(Lang.HELP_SHOW_ROWS.toString(), ArgShowRows.class, Main.artifactId + ".admin"),
+    SHOW_ROWS(Lang.HELP_SHOW_ROWS.toString(), ArgShowRows.class, Main.artifactId + ".admin"),
     RST(Lang.HELP_RESTORE.toString(), ArgRestore.class, Main.artifactId + ".admin"),
     RESTORE(Lang.HELP_RESTORE.toString(), ArgRestore.class, Main.artifactId + ".admin"),
     HI(Lang.HELP_HAS_ITEM.toString(), ArgHasItem.class, Main.artifactId + ".admin"),

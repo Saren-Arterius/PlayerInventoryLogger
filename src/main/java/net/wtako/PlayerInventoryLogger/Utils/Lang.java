@@ -47,13 +47,16 @@ public enum Lang {
                             HELP_SHOW_LOG("Type &b/" + Main.getInstance().getProperty("mainCommand")
                                     + " &a{0}&f <PlayerName> [MinutesSpan = 60] [MinutesBefore = 0] "
                                     + "[LogReason = ALL] show a player's inventory log."),
-                                    HELP_RESTORE("Type &b/" + Main.getInstance().getProperty("mainCommand")
-                                            + " &a{0}&f <RowID> [RestoreTarget = You] to restore a player's inventory to somebody."),
-                                            HELP_HELP("Type &b/" + Main.getInstance().getProperty("mainCommand") + " &a{0}&f to show help (this message)."),
-                                            HELP_RELOAD("Type &b/" + Main.getInstance().getProperty("mainCommand") + " &a{0}&f to reload the plugin."),
-                                            NO_PERMISSION_HELP(" (&cno permission&f)"),
-                                            PLUGIN_RELOADED("&aPlugin reloaded."),
-                                            NO_PERMISSION_COMMAND("&cYou are not allowed to use this command.");
+                                    HELP_SHOW_ROWS("Type &b/" + Main.getInstance().getProperty("mainCommand")
+                                            + " &a{0}&f <PlayerName> <FromID> [ToID = FromID] "
+                                            + "[LogReason = ALL] show a player's inventory log rows."),
+                                            HELP_RESTORE("Type &b/" + Main.getInstance().getProperty("mainCommand")
+                                                    + " &a{0}&f <RowID> [RestoreTarget = You] to restore a player's inventory to somebody."),
+                                                    HELP_HELP("Type &b/" + Main.getInstance().getProperty("mainCommand") + " &a{0}&f to show help (this message)."),
+                                                    HELP_RELOAD("Type &b/" + Main.getInstance().getProperty("mainCommand") + " &a{0}&f to reload the plugin."),
+                                                    NO_PERMISSION_HELP(" (&cno permission&f)"),
+                                                    PLUGIN_RELOADED("&aPlugin reloaded."),
+                                                    NO_PERMISSION_COMMAND("&cYou are not allowed to use this command.");
 
     private String                   path;
     private String                   def;

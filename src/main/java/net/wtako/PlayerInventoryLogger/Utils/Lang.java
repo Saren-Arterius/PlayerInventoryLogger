@@ -21,7 +21,7 @@ public enum Lang {
     LOG_ALL_NOW_START("&eStarted logging all online players' inventories..."),
     LOG_ALL_NOW_LOGGING_WHO("Logging {0}..."),
     LOG_ALL_NOW_FINISH("&aFinished logging all online players' inventories."),
-    LOG_ALL_NOW_RUNNING("&eAnother instance is do its inventories logging job."),
+    LOG_ALL_NOW_RUNNING("&eAnother instance is doing its inventories logging job."),
 
     SHOW_LOG_TITLE("Inventory Log for {0} between {1} and {2}:"),
     SHOW_LOG_FORMAT("{0}. Time: {1}, World: {2}, X: {3}, Y: {4}, Z: {5}, Balance: ${7}, Exp: {8}, Log reason: {6}"),

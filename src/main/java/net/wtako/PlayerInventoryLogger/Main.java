@@ -55,6 +55,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEventListener(), this);
     }
 
+    @SuppressWarnings("deprecation")
     public void loadLang() {
         final File lang = new File(getDataFolder(), "messages.yml");
         if (!lang.exists()) {
@@ -96,11 +97,13 @@ public final class Main extends JavaPlugin {
     }
 
     public void setupEcon() {
-        final RegisteredServiceProvider<Economy> economyProvider = Main.getInstance().getServer().getServicesManager()
-                .getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            Main.econ = economyProvider.getProvider();
-        }
+        try {
+            final RegisteredServiceProvider<Economy> economyProvider = Main.getInstance().getServer()
+                    .getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+            if (economyProvider != null) {
+                Main.econ = economyProvider.getProvider();
+            }
+        } catch (final NoClassDefFoundError e) {}
     }
 
     /**
@@ -121,6 +124,7 @@ public final class Main extends JavaPlugin {
         return Main.LANG_FILE;
     }
 
+    @SuppressWarnings("deprecation")
     public String getProperty(String key) {
         final YamlConfiguration spawnConfig = YamlConfiguration.loadConfiguration(getResource("plugin.yml"));
         return spawnConfig.getString(key);

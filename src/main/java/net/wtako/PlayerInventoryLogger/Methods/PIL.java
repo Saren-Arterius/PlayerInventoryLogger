@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import net.wtako.PlayerInventoryLogger.Main;
 import net.wtako.PlayerInventoryLogger.Utils.CompressUtils;
+import net.wtako.PlayerInventoryLogger.Utils.Config;
 import net.wtako.PlayerInventoryLogger.Utils.ExperienceManager;
 import net.wtako.PlayerInventoryLogger.Utils.ItemUtils;
 import net.wtako.PlayerInventoryLogger.Utils.Lang;
@@ -36,7 +37,7 @@ public class PIL {
         DEATH,
         MANUAL,
         CHANGE_WORLD,
-        INV_RESTORE,
+        INV_RESTORE
     }
 
     public static void logPlayer(final Player player, final LogReason reason, boolean forceAsync) {
@@ -82,7 +83,6 @@ public class PIL {
     public static void showLog(final CommandSender sender, final OfflinePlayer target, final LogReason reason,
             final int minutesSpan, final int minutesBefore) {
         new BukkitRunnable() {
-            @SuppressWarnings("deprecation")
             @Override
             public void run() {
                 try {
@@ -129,7 +129,6 @@ public class PIL {
     public static void showRows(final CommandSender sender, final OfflinePlayer target, final LogReason reason,
             final int inclusiveFrom, final int inclusiveTo) {
         new BukkitRunnable() {
-            @SuppressWarnings("deprecation")
             @Override
             public void run() {
                 try {
@@ -194,7 +193,9 @@ public class PIL {
                             UUIDUtils.getPlayerName(UUID.fromString(result.getString("player_uuid"))));
                     result.close();
                     insStmt.close();
-                    PIL.logPlayer(target, LogReason.INV_RESTORE, false);
+                    if (Config.LOG_WHEN.getStrings().contains(LogReason.INV_RESTORE.name())) {
+                        PIL.logPlayer(target, LogReason.INV_RESTORE, false);
+                    }
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -214,7 +215,7 @@ public class PIL {
     public static void showPlayerEverHasSimilarItem(final CommandSender sender, final OfflinePlayer target,
             final ItemStack stack, final Integer limitCycles) {
         new BukkitRunnable() {
-            @SuppressWarnings({"unchecked", "deprecation"})
+            @SuppressWarnings({"unchecked"})
             @Override
             public void run() {
                 try {

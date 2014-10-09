@@ -22,9 +22,23 @@ public class Database {
     public Database() throws SQLException {
         Database.instance = this;
         final String path = MessageFormat.format("jdbc:sqlite:{0}/{1}", Main.getInstance().getDataFolder()
-                .getAbsolutePath(), Main.getInstance().getName() + ".db");
-        conn = DriverManager.getConnection(path);
-        check();
+                .getAbsolutePath(), Main.getInstance().getName() + ".db");;
+                try {
+                    conn = DriverManager.getConnection(path);
+                } catch (final SQLException e) {
+                    Main.log.warning(Lang.TITLE.toString() + "No suitable driver found for jbdc:sqlite, Windows box?");
+                    Main.log.warning(Lang.TITLE.toString() + "Looking for external JDBC driver...");
+                    try {
+                        Class.forName("org.sqlite.JDBC");
+                        conn = DriverManager.getConnection(path);
+                    } catch (final ClassNotFoundException e1) {
+                        Main.log.severe(Lang.TITLE.toString() + "External JDBC driver not found.");
+                        Main.log.severe(Lang.TITLE.toString() + "Failed to initialize sqlite database. Disabling...");
+                        Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
+                        return;
+                    }
+                }
+                check();
     }
 
     public void check() throws SQLException {

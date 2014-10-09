@@ -25,6 +25,9 @@ public class LogPurger extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!Config.AUTO_PURGE_ENABLED.getBoolean()) {
+            return;
+        }
         final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
         final long purgeBefore = System.currentTimeMillis()
                 - (Config.AUTO_PURGE_BEFORE_DAYS.getInt() * 1000L * 60L * 60L * 24L);
@@ -37,6 +40,11 @@ public class LogPurger extends BukkitRunnable {
             delStmt.setLong(1, purgeBefore);
             delStmt.execute();
             delStmt.close();
+            Main.log.info("Compacting database...");
+            final PreparedStatement vacStmt = Database.getConn().prepareStatement("VACUUM");
+            vacStmt.executeUpdate();
+            vacStmt.close();
+            Main.log.info("Done.");
         } catch (final SQLException e) {
             e.printStackTrace();
         }

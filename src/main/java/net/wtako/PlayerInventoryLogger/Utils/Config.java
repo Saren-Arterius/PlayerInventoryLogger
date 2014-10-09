@@ -1,17 +1,21 @@
 package net.wtako.PlayerInventoryLogger.Utils;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.wtako.PlayerInventoryLogger.Main;
+import net.wtako.PlayerInventoryLogger.Methods.PIL;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
 public enum Config {
 
     LOG_ECON("logger.loc-econ", true),
-    AUTO_PURGE_BEFORE_DAYS("auto-purge.before-days", 7),
+    AUTO_PURGE_ENABLED("auto-purge.enabled", true),
+    AUTO_PURGE_BEFORE_DAYS("auto-purge.before-days", 14),
     AUTO_PURGE_INTERVAL_MINUTES("auto-purge.interval-minutes", 30),
-    AUTO_LOG_INTERVAL_SECONDS("logger.auto-log.interval-seconds", 60);
+    AUTO_LOG_INTERVAL_SECONDS("logger.auto-log.interval-seconds", 60),
+    LOG_WHEN("logger.log-when-players", Arrays.asList(Config.enumNames(PIL.LogReason.values())));
 
     private String path;
     private Object value;
@@ -24,6 +28,10 @@ public enum Config {
         } else {
             value = var;
         }
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     public Object getValue() {
@@ -75,9 +83,22 @@ public enum Config {
         for (final Config setting: Config.values()) {
             if (!config.contains(setting.getPath())) {
                 config.set(setting.getPath(), setting.getValue());
+            } else {
+                setting.setValue(config.get(setting.getPath()));
             }
         }
         Main.getInstance().saveConfig();
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static String[] enumNames(Enum[] enums) {
+        final String[] names = new String[enums.length];
+
+        for (int i = 0; i < enums.length; i++) {
+            names[i] = enums[i].name();
+        }
+
+        return names;
     }
 
 }

@@ -19,6 +19,9 @@ public class AutoLogger extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!Config.LOG_WHEN.getStrings().contains(LogReason.AUTO_LOG.name())) {
+            return;
+        }
         for (final Player player: Main.getInstance().getServer().getOnlinePlayers()) {
             PIL.logPlayer(player, LogReason.AUTO_LOG, false);
         }
